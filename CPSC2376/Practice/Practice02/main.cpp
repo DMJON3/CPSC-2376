@@ -8,10 +8,10 @@ int main() {
     const string FILENAME = "account_balance.txt";
     double balance = 0.0;
 
-    // Open the file to read balance
+    
     ifstream infile(FILENAME);
     if (!infile.is_open()) {
-        // File doesn't exist, create it with default balance
+        
         ofstream outfile(FILENAME);
         if (!outfile.is_open()) {
             cerr << "Error: Unable to create balance file." << endl;
@@ -39,8 +39,8 @@ int main() {
         cin >> choice;
 
         if (cin.fail()) {
-            cin.clear(); // Clear the error
-            cin.ignore(1000, '\n'); // Discard invalid input
+            cin.clear(); 
+            cin.ignore(1000, '\n'); 
             cout << "Invalid input. Please enter a number.\n";
             continue;
         }
