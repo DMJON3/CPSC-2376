@@ -1,20 +1,102 @@
-// Practice2.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <fstream>
+#include <string>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+using namespace std;
+
+int main() {
+    const string FILENAME = "account_balance.txt";
+    double balance = 0.0;
+
+    // Open the file to read balance
+    ifstream infile(FILENAME);
+    if (!infile.is_open()) {
+        // File doesn't exist, create it with default balance
+        ofstream outfile(FILENAME);
+        if (!outfile.is_open()) {
+            cerr << "Error: Unable to create balance file." << endl;
+            return 1;
+        }
+        balance = 100.0;
+        outfile << balance;
+        outfile.close();
+        cout << "New account created with initial balance: $100.00\n";
+    }
+    else {
+        infile >> balance;
+        infile.close();
+        cout << "Account loaded. Current balance: $" << balance << "\n";
+    }
+
+    int choice;
+    while (true) {
+        cout << "\n=== Menu ===\n";
+        cout << "1. Check Balance\n";
+        cout << "2. Deposit\n";
+        cout << "3. Withdraw\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if (cin.fail()) {
+            cin.clear(); // Clear the error
+            cin.ignore(1000, '\n'); // Discard invalid input
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        if (choice == 1) {
+            cout << "Current balance: $" << balance << "\n";
+        }
+        else if (choice == 2) {
+            double amount;
+            cout << "Enter amount to deposit: $";
+            cin >> amount;
+
+            if (cin.fail() || amount <= 0) {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Deposit must be a positive number.\n";
+                continue;
+            }
+
+            balance += amount;
+            ofstream outfile(FILENAME);
+            outfile << balance;
+            outfile.close();
+            cout << "Deposited: $" << amount << "\n";
+        }
+        else if (choice == 3) {
+            double amount;
+            cout << "Enter amount to withdraw: $";
+            cin >> amount;
+
+            if (cin.fail() || amount <= 0) {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Withdrawal must be a positive number.\n";
+                continue;
+            }
+
+            if (amount > balance) {
+                cout << "Insufficient funds. Your balance is $" << balance << "\n";
+            }
+            else {
+                balance -= amount;
+                ofstream outfile(FILENAME);
+                outfile << balance;
+                outfile.close();
+                cout << "Withdrew: $" << amount << "\n";
+            }
+        }
+        else if (choice == 4) {
+            cout << "Thank you for using the program. Goodbye!\n";
+            break;
+        }
+        else {
+            cout << "Invalid option. Please choose 1 to 4.\n";
+        }
+    }
+
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
